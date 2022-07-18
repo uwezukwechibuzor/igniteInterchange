@@ -1,0 +1,19 @@
+syntax = "proto3";
+package uwezukwechibuzor.interchange.dex;
+
+import "gogoproto/gogo.proto";
+import "dex/params.proto";
+import "dex/buy_order_book.proto";
+import "dex/sell_order_book.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/uwezukwechibuzor/interchange/x/dex/types";
+
+// GenesisState defines the dex module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  string port_id = 2;
+  repeated BuyOrderBook buyOrderBookList = 3 [(gogoproto.nullable) = false];
+  repeated SellOrderBook sellOrderBookList = 4 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

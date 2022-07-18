@@ -1,0 +1,12 @@
+syntax = "proto3";
+package uwezukwechibuzor.interchange.dex;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/uwezukwechibuzor/interchange/x/dex/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
