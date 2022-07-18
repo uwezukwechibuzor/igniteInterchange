@@ -15,6 +15,13 @@ export interface DexBuyOrderBook {
   priceDenom?: string;
 }
 
+export interface DexDenomTrace {
+  index?: string;
+  port?: string;
+  channel?: string;
+  origin?: string;
+}
+
 export type DexMsgCancelBuyOrderResponse = object;
 
 export type DexMsgCancelSellOrderResponse = object;
@@ -45,6 +52,21 @@ export interface DexQueryAllBuyOrderBookResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface DexQueryAllDenomTraceResponse {
+  denomTrace?: DexDenomTrace[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface DexQueryAllSellOrderBookResponse {
   sellOrderBook?: DexSellOrderBook[];
 
@@ -62,6 +84,10 @@ export interface DexQueryAllSellOrderBookResponse {
 
 export interface DexQueryGetBuyOrderBookResponse {
   buyOrderBook?: DexBuyOrderBook;
+}
+
+export interface DexQueryGetDenomTraceResponse {
+  denomTrace?: DexDenomTrace;
 }
 
 export interface DexQueryGetSellOrderBookResponse {
@@ -389,6 +415,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryBuyOrderBook = (index: string, params: RequestParams = {}) =>
     this.request<DexQueryGetBuyOrderBookResponse, RpcStatus>({
       path: `/uwezukwechibuzor/interchange/dex/buy_order_book/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDenomTraceAll
+   * @summary Queries a list of DenomTrace items.
+   * @request GET:/uwezukwechibuzor/interchange/dex/denom_trace
+   */
+  queryDenomTraceAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<DexQueryAllDenomTraceResponse, RpcStatus>({
+      path: `/uwezukwechibuzor/interchange/dex/denom_trace`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDenomTrace
+   * @summary Queries a DenomTrace by index.
+   * @request GET:/uwezukwechibuzor/interchange/dex/denom_trace/{index}
+   */
+  queryDenomTrace = (index: string, params: RequestParams = {}) =>
+    this.request<DexQueryGetDenomTraceResponse, RpcStatus>({
+      path: `/uwezukwechibuzor/interchange/dex/denom_trace/${index}`,
       method: "GET",
       format: "json",
       ...params,

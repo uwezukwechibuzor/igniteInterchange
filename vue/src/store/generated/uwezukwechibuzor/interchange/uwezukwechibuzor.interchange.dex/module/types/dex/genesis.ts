@@ -2,6 +2,7 @@
 import { Params } from "../dex/params";
 import { BuyOrderBook } from "../dex/buy_order_book";
 import { SellOrderBook } from "../dex/sell_order_book";
+import { DenomTrace } from "../dex/denom_trace";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "uwezukwechibuzor.interchange.dex";
@@ -11,8 +12,9 @@ export interface GenesisState {
   params: Params | undefined;
   port_id: string;
   buyOrderBookList: BuyOrderBook[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   sellOrderBookList: SellOrderBook[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  denomTraceList: DenomTrace[];
 }
 
 const baseGenesisState: object = { port_id: "" };
@@ -31,6 +33,9 @@ export const GenesisState = {
     for (const v of message.sellOrderBookList) {
       SellOrderBook.encode(v!, writer.uint32(34).fork()).ldelim();
     }
+    for (const v of message.denomTraceList) {
+      DenomTrace.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -40,6 +45,7 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.buyOrderBookList = [];
     message.sellOrderBookList = [];
+    message.denomTraceList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -59,6 +65,11 @@ export const GenesisState = {
             SellOrderBook.decode(reader, reader.uint32())
           );
           break;
+        case 5:
+          message.denomTraceList.push(
+            DenomTrace.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -71,6 +82,7 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.buyOrderBookList = [];
     message.sellOrderBookList = [];
+    message.denomTraceList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -97,6 +109,11 @@ export const GenesisState = {
         message.sellOrderBookList.push(SellOrderBook.fromJSON(e));
       }
     }
+    if (object.denomTraceList !== undefined && object.denomTraceList !== null) {
+      for (const e of object.denomTraceList) {
+        message.denomTraceList.push(DenomTrace.fromJSON(e));
+      }
+    }
     return message;
   },
 
@@ -119,6 +136,13 @@ export const GenesisState = {
     } else {
       obj.sellOrderBookList = [];
     }
+    if (message.denomTraceList) {
+      obj.denomTraceList = message.denomTraceList.map((e) =>
+        e ? DenomTrace.toJSON(e) : undefined
+      );
+    } else {
+      obj.denomTraceList = [];
+    }
     return obj;
   },
 
@@ -126,6 +150,7 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.buyOrderBookList = [];
     message.sellOrderBookList = [];
+    message.denomTraceList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -150,6 +175,11 @@ export const GenesisState = {
     ) {
       for (const e of object.sellOrderBookList) {
         message.sellOrderBookList.push(SellOrderBook.fromPartial(e));
+      }
+    }
+    if (object.denomTraceList !== undefined && object.denomTraceList !== null) {
+      for (const e of object.denomTraceList) {
+        message.denomTraceList.push(DenomTrace.fromPartial(e));
       }
     }
     return message;
